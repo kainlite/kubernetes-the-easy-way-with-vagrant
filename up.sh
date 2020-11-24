@@ -8,6 +8,9 @@ if [ $VAGRANT_SCP == "0" ]; then
     vagrant plugin install vagrant-scp
 fi
 
+sed 's/config.ssh.username = "root"/# config.ssh.username = "root"/' -i Vagrantfile
+sed 's/config.ssh.private_key_path = "certs\/id_rsa"/# config.ssh.private_key_path = "certs\/id_rsa"/' -i Vagrantfile
+
 vagrant up --provider virtualbox --no-provision
 
 for node in "${!EXTERNAL_IP[@]}"; do
@@ -23,6 +26,9 @@ for node in "${!EXTERNAL_IP[@]}"; do
     vagrant ssh ${node} -c "sudo cp /vagrant/certs/id_rsa /root/.ssh/"
     vagrant ssh ${node} -c "sudo cp /vagrant/certs/id_rsa.pub /root/.ssh/authorized_keys"
 done
+
+sed 's/# config.ssh.username = "root"/config.ssh.username = "root"/' -i Vagrantfile
+sed 's/# config.ssh.private_key_path = "certs\/id_rsa"/config.ssh.private_key_path = "certs\/id_rsa"/' -i Vagrantfile
 
 vagrant provision
 
