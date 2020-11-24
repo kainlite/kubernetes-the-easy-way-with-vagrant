@@ -4,8 +4,8 @@ POD_NW_CIDR = "10.244.0.0/16"
 Vagrant.configure("2") do |config|
     config.vm.box = "ubuntu/bionic64"
     config.vm.box_check_update = false
-    config.ssh.username = "root"
-    config.ssh.private_key_path = "certs/id_rsa"
+    # config.ssh.username = "root"
+    # config.ssh.private_key_path = "certs/id_rsa"
 
     (0..2).each do |n|
         config.vm.define "controller-#{n}" do |node|
@@ -30,15 +30,11 @@ Vagrant.configure("2") do |config|
             node.vm.provision "update-dns", type: "shell", :path => "scripts/update-dns.sh"
             node.vm.provision "install-base-tools", type: "shell", :path => "scripts/install-base-tools.sh"
             node.vm.provision "install-controller-tools", type: "shell", :path => "scripts/install-controller-tools.sh"
-            node.vm.provision "set-environment", type: "shell", :path => "scripts/set-environment.sh"
             if n == 0
                 node.vm.provision "create-a-gazillion-certificates", type: "shell", :path => "scripts/create-certificates.sh"
                 node.vm.provision "create-a-gazillion-kubeconfigs", type: "shell", :path => "scripts/create-kubeconfigs.sh"
                 node.vm.provision "encryption-config", type: "shell", :path => "scripts/encryption-config.sh"
             end
-            node.vm.provision "bootstrap-etcd", type: "shell", :path => "scripts/bootstrap-etcd.sh"
-            node.vm.provision "bootstrap-control-plane", type: "shell", :path => "scripts/bootstrap-control-plane.sh"
-            node.vm.provision "bootstrap-control-plane", type: "shell", :path => "scripts/create-cluster-permissions.sh"
         end
     end
 
@@ -66,8 +62,6 @@ Vagrant.configure("2") do |config|
             node.vm.provision "update-dns", type: "shell", :path => "scripts/update-dns.sh"
             node.vm.provision "install-base-tools", type: "shell", :path => "scripts/install-base-tools.sh"
             node.vm.provision "install-worker-tools", type: "shell", :path => "scripts/install-worker-tools.sh"
-            node.vm.provision "set-environment", type: "shell", :path => "scripts/set-environment.sh"
-            node.vm.provision "bootstrap-worker", type: "shell", :path => "scripts/bootstrap-worker.sh"
         end
     end
 end

@@ -32,6 +32,24 @@ sed 's/# config.ssh.private_key_path = "certs\/id_rsa"/config.ssh.private_key_pa
 
 vagrant provision
 
+# ETCD
+for i in `seq 0 2`; do
+    vagrant ssh controller-${i} -c "/vagrant/scripts/bootstrap-etcd.sh" &
+done
+
+wait
+
+# Control plane
+for i in `seq 0 2`; do
+    vagrant ssh controller-${i} -c "/vagrant/scripts/bootstrap-control-plane.sh"
+    vagrant ssh controller-${i} -c "/vagrant/scripts/create-cluster-permissions.sh"
+done
+
+# Workers
+for i in `seq 0 2`; do
+    vagrant ssh worker-${i} -c "/vagrant/scripts/bootstrap-worker.sh"
+done
+
 echo '######################## WAITING TILL ALL NODES ARE READY ########################'
 sleep 60
 chmod 400 certs/id_rsa
