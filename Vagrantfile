@@ -66,7 +66,7 @@ Vagrant.configure("2") do |config|
             node.vm.provision 'shell', inline: "cat /vagrant/certs/id_rsa.pub >> /root/.ssh/authorized_keys"
             node.vm.provision "update-dns", type: "shell", :path => "scripts/update-dns.sh"
             node.vm.provision "install-base-tools", type: "shell", :path => "scripts/install-base-tools.sh"
-            node.vm.provision "install-controller-tools", type: "shell", :path => "scripts/install-worker-tools.sh"
+            node.vm.provision "install-worker-tools", type: "shell", :path => "scripts/install-worker-tools.sh"
             node.vm.provision "set-environment", type: "shell", :path => "scripts/set-environment.sh"
             node.vm.provision "bootstrap-worker", type: "shell", :path => "scripts/bootstrap-worker.sh"
         end
