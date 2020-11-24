@@ -6,7 +6,6 @@ Vagrant.configure("2") do |config|
     config.vm.box_check_update = false
     config.ssh.username = "root"
     config.ssh.private_key_path = "certs/id_rsa"
-    config.ssh.path = "/root"
 
     (0..2).each do |n|
         config.vm.define "controller-#{n}" do |node|

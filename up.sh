@@ -8,7 +8,7 @@ if [ $VAGRANT_SCP == "0" ]; then
     vagrant plugin install vagrant-scp
 fi
 
-# vagrant up --provider virtualbox --no-provision
+vagrant up --provider virtualbox --no-provision
 
 for node in "${!EXTERNAL_IP[@]}"; do
     echo "Starting with node: ${node} and IP: ${EXTERNAL_IP[$node]}"
