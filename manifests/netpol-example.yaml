@@ -1,0 +1,106 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    app: client
+  name: client
+spec:
+  containers:
+  - image: busybox:1.32.0
+    name: client
+    command:
+    - sh
+    - -c
+    - sleep 7d
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    app: app1
+  name: app1
+spec:
+  containers:
+  - image: busybox:1.32.0
+    name: app1
+    command:
+    - sh
+    - -c
+    - nc -l -v -p 1111 -k
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    app: app2
+  name: app2
+spec:
+  containers:
+  - image: busybox:1.32.0
+    name: app2
+    command:
+    - sh
+    - -c
+    - nc -l -v -p 2222 -k
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app1
+  labels:
+    app: app1
+spec:
+  ports:
+  - port: 1111
+    protocol: TCP
+  selector:
+    app: app1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app2
+  labels:
+    app: app2
+spec:
+  ports:
+  - port: 2222
+    protocol: TCP
+  selector:
+    app: app2
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-network-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: client
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    ports:
+    - protocol: TCP
+      port: 53
+    - protocol: UDP
+      port: 53
+  - to:
+    - podSelector:
+        matchLabels:
+          app: app1
+    ports:
+    - protocol: TCP
+      port: 1111

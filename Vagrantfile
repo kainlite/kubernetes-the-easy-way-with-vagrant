@@ -4,8 +4,8 @@ POD_NW_CIDR = "10.244.0.0/16"
 Vagrant.configure("2") do |config|
     config.vm.box = "ubuntu/bionic64"
     config.vm.box_check_update = false
-    # config.ssh.username = "root"
-    # config.ssh.private_key_path = "certs/id_rsa"
+    config.ssh.username = "root"
+    config.ssh.private_key_path = "certs/id_rsa"
 
     (0..2).each do |n|
         config.vm.define "controller-#{n}" do |node|
